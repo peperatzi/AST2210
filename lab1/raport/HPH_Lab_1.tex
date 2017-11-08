@@ -1,0 +1,264 @@
+\documentclass{emulateapj}
+%\documentclass[12pt,preprint]{aastex}
+
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{amsmath}
+\usepackage{epsfig,floatflt}
+\usepackage{float}
+\usepackage{hyperref}
+%\usepackage{biblatex}
+%\addbibresource{sample.bib}
+
+\begin{document}
+
+\title{Diffraction of light}
+
+\author{Hans-Petter Harveg}
+
+\email{hanspeph@student.matnat.uio.no}
+
+\altaffiltext{1}{Institute of Theoretical Astrophysics, University of
+  Oslo, P.O.\ Box 1029 Blindern, N-0315 Oslo, Norway}
+
+%\date{Received - / Accepted -}
+
+\begin{abstract}
+Light that pass through a slit or encounters a barrier break apart and produce what is called a diffraction pattern on a surface ahead. When light passes through a circular aprture, it breks up into a circular "Airy pattern". The inner circle in this circular pattern is called an Airy disk and define a limit to the angular resolution of the telescope. To more firmly understand this phenomena, we have performed three experimets. We then used our findings to calculated the smallest physcial size of an object that James Webb Space Telescope (JWST) can resolve at various distances.
+\end{abstract}
+
+\keywords{diffraction --- astronomy: observations --- methods: experimental}
+
+\section{Introduction}
+\label{sec:introduction}
+
+When light encounteres an obstacle like a slit or a barrier, experiments show it will break apart and produce a pattern on a surface ahead. This fenomena is called diffraction and shows that light behaves like a wave. We need to take this phenomena into consideration in optics because due to what is called the Airy disk, this seems to set a limit to the angular resolution of the image. Objects that appear smaller that the airy disk is not reliable data. An example would be lights from a car, seen from far away when they appear to be only a single light source.
+
+Not many experiments have been conducted so far, but the phenomena has been known since the 1600 by various scientists. It was first carefully observed and characterized by Francesco Maria Grimaldi, who also coined the term difraction, which is Lathin for 'to break into pieces'.  
+
+We will perform three experiments on the phenomena diffraction.
+
+\begin{itemize}
+\item A laser through a single slit.
+\item A laser against a barrier, which we will use a paper clip
+\item A laser through a circular aprature.
+\end{itemize}
+
+We will then use our findings to estimate the resolution of JWST, giving some examples of object sizes that can be observed from various distances.
+
+\section{Method}
+\label{sec:method}
+
+For the first experiment, we set up a simple setup with a laser and a $100 \mu m$. A small laser tube was mounted on a platform and powered by a $4.5V$ battery. We aimed the laser on the slit and projected the diffraction pattern on the wall ahead. We used a measuring tape to measure the length from the slit to the wall. To measure the distance between maxima we used a simple A4 sheet of paper and marked the location of the maximas using a pencil. Figure 1 shows a setup of experiment 1.
+
+In our calculations, we used the formula for a single slit. However, because we are counting maximas, we need to add $1/2$ to $m$. 
+
+\begin{equation}
+a\sin{\theta} = (m+\frac{1}{2})\lambda
+\end{equation}
+
+Where $a$ is the width of the slit, $m$ is the order of the minima at angle $\theta$, and $\lambda$ the wave length of the laser.
+
+Using small angles, we have that $\tan{\theta}=\theta=\sin{\theta}$ and can therefore write $sin{\theta}$ simply as $\frac{h}{L}$, where $L$ is distance from slit to the wall and $h$ is the distance to the $8th$ maxima. When solving for $\lambda$, we can therefore use a simplyfied expression
+
+\begin{equation}
+\lambda = \frac{a}{(m+\frac{1}{2})} \frac{h}{L}
+\end{equation}
+
+Uncertainties from the measurements have been calculated using equation\footnote{\url{http://ipl.physics.harvard.edu/wp-uploads/2013/03/PS3_Error_Propagation_sp13.pdf}} from the fact sheet given at the lab
+
+\begin{equation}
+\delta \lambda = \lambda \sqrt{\bigg (\frac{\delta h}{h}\bigg)^2 + \bigg (\frac{\delta L}{L}\bigg )^2}
+\end{equation}
+
+%%%%%%%%%%
+
+For the seccond experiment, we replaced the slit by a deformed paper clip and repeated the experiment. Like the first experiment, a diffraction pattern is projected onto the wall, but this time the pattern was inverted. To explain what happends here, we need to use Babinet's principle which states that an exact, but opposite diffraction pattern will get projected onto the wall, given that the diameter of the barrier equals the size of the opening of the slit. The reason of the narrow distance between minimas is thus the diameter of the paper clip. Figure 2 shows a setup of experiment 2.
+
+We usind an $A4$ sheet of paper, marked the location of the 18th minima from the center and found the angle and the angles uncartainty by 
+
+\begin{equation}
+\theta = \frac{h}{L}
+\end{equation}
+
+\begin{equation}
+\delta \theta = \theta\sqrt{\bigg (\frac{\delta h}{h}\bigg)^2 + \bigg (\frac{\delta L}{L}\bigg )^2}
+\end{equation}
+
+where $L$ is the distance from the paper clip to the wall and $h$ is the distance from the $1st$ to the $18th$ minima. The width, and its uncertainty of the paper clip by
+
+\begin{equation}
+a = \frac{(m + \frac{1}{2})\lambda}{\theta}
+\end{equation}
+
+\begin{equation}
+\delta a = a\sqrt{\bigg (\frac{\delta \lambda}{\lambda}\bigg)^2 + \bigg (\frac{\delta \theta}{\theta}\bigg )^2}
+\end{equation}
+
+%%%%%%%%%%
+
+For the third and last experiment, we used a setup with the laser connected through a fiber to a collimator tube, with damping filter. The light from the tube was focused by an $5 cm$ $f = 100mm$ doublet lens. The microscope objective and mono-chromatic camera was used to magnify and image at different exposuring times, the resulting Airy pattern in the focal plane, which we seved as a grayscale bitmap. The camera had $6 \mu m$ pixels and the microscope objective $20\times$ magnification. Figure 5 shows the setup Figure 1 shows the saved bitmap of the Airy pattern. To find the size of the Airy disk, we used a nummerical method using MATLAB. The pixel where we found the minima was gray. For that reason we chose the uncartainty to be about one pixel in total. Figure 3 shows a setup of experiment 3.
+
+We needed to find $K_1$.
+
+\begin{equation}
+\sin{\theta_1} = K_1\frac{\lambda}{d} \rightarrow \frac{h_1}{L} = \frac{K_1 \lambda}{d}
+\end{equation}
+
+\begin{equation}
+\sin{\theta_2} = K_2\frac{\lambda}{d} \rightarrow \frac{h_2}{L} = \frac{K_2 \lambda}{d}
+\end{equation}
+
+Solving for L in equation (8) and inserting it to equation (9) gives us an expression for $K_1$
+
+\begin{equation}
+K_1 = K_2\frac{h_1}{h_2}
+\end{equation}
+
+Having an expression for $K_1$ we measured the distance from the center of the Airy pattern to the $1st$ minima and from the center to the $2nd$ minima. We used this to calculate the angular limit $\theta_{min}$. Given the size of the diameter of the mirror, and two different wavelengths, we estimated the angular resolution of JWST.
+
+\section{Data}
+\label{sec:data}
+
+\begin{figure}[H]
+\mbox{\epsfig{figure=../images/b10.jpg,width=\linewidth,clip=}}
+\caption{Airy pattern from experiment three. The image was taken using short exposure time. An over exposted image would show more rings, but the first minima would be harder to detect.}
+\label{fig:figure_1_label}
+\end{figure}
+
+\begin{figure}[H]
+\mbox{\epsfig{figure=../airydisk_size_plot_b10.png,width=\linewidth,clip=}}
+\caption{Plot of the middle vertical line in the Airy image. The plot shows that the detected pixels color is not completely black which we need to take into consideration when we calculate the size of the Airy disk.}
+\label{fig:figure_2_label}
+\end{figure}
+
+\begin{figure}[H]
+\mbox{\epsfig{figure=../images/setup1.png,width=\linewidth,clip=}}
+\caption{Setup for experiment one.}
+\label{fig:figure_3_label}
+\end{figure}
+
+\begin{figure}[H]
+\mbox{\epsfig{figure=../images/setup2.png,width=\linewidth,clip=}}
+\caption{Setup for experiment two.}
+\label{fig:figure_4_label}
+\end{figure}
+
+\begin{figure}[H]
+\mbox{\epsfig{figure=../images/setup3.png,width=\linewidth,clip=}}
+\caption{Setup for experiment three.}
+\label{fig:figure_5_label}
+\end{figure}
+
+
+The Airy image and the code can be downloaded from GitHub\footnote{\url{https://github.com/Spillerom/AST2210}}
+
+\section{Results}
+\label{sec:results}
+
+In the first experiment we found that the distance from the slit to the wall: $L = 2.004 \pm 0.004m$. Distance from $1st$ to $8th$ maxina: $0.11 \pm 0.001m$.
+By equation (2) and (3) the wavelength with uncertainties  was found to be  $646 \pm 6nm$.
+
+\begin{equation}
+\lambda = \frac{a}{m}\frac{h}{L} \rightarrow \frac{100\times 10^{-6}m}{8.5}\frac{11\times 10^{-2}m}{2.004 m} \approx 646 nm
+\end{equation}
+
+\begin{equation}
+\delta \lambda = \lambda\sqrt{\bigg (\frac{\delta h}{h}\bigg)^2 + \bigg (\frac{\delta L}{L}\bigg )^2}
+\end{equation}
+
+\begin{equation}
+\rightarrow \delta \lambda = 646\sqrt{\bigg (\frac{0.001m}{0.11m}\bigg)^2 + \bigg (\frac{0.004m}{2.004m}\bigg )^2} \approx 6 nm
+\end{equation}
+
+In the seccond experiment, we found the length from the paper clip to the wall to be $2.292 \pm 0.005m$. The distance from $1st$ to the $18th$ minima to be $0.033 \pm 0.001m$. The angle of the $18th$ minima was found by equation (4) and its uncartainty by equation (5). We measured the diameter of the paper clip to be $0.83 \pm 0.46mm$
+
+\begin{equation}
+\theta = \frac{h}{L} \rightarrow \theta = \frac{0.033m}{2.292m} \approx 0.0144 
+\end{equation}
+
+\begin{equation}
+\delta \theta = \theta\sqrt{\bigg (\frac{\delta h}{h}\bigg)^2 + \bigg (\frac{\delta L}{L}\bigg )^2}
+\end{equation}
+
+\begin{equation}
+\rightarrow \delta \theta = 0.0144\sqrt{\bigg (\frac{0.001m}{0.033m}\bigg)^2 + \bigg (\frac{0.005m}{2.292m}\bigg )^2} \approx 4.375\times 10^{-4}
+\end{equation}
+
+\begin{equation}
+a = \frac{(m + \frac{1}{2}) \lambda}{\theta} \rightarrow a = \frac{18.5(646\times 10^{-9}m)}{0.0144} = 8.2993\times 10^{-4}m
+\end{equation}
+
+\begin{equation}
+\delta a = \theta\sqrt{\bigg (\frac{\delta \lambda}{\lambda}\bigg)^2 + \bigg (\frac{\delta \theta}{\theta}\bigg )^2}
+\end{equation}
+
+\begin{equation}
+\rightarrow \delta a = 0.0144\sqrt{\bigg (\frac{6}{646}\bigg)^2 + \bigg (\frac{4.375\times 10^{-4}}{0.0144}\bigg )^2} \approx 4.5745\times 10^{-4}
+\end{equation}
+
+In the third experiment, we measured the distance from center to the $1st$ minima to be $h_1 = 4px$ and the distance from the center to the $2nd$ to be $h_2 = 8px$. Using equation (10) we then found $K_1 = 1.115 \pm 0.197$ by
+
+\begin{equation}
+K_1 = K_2\frac{h_1}{h_2} \rightarrow K_1 = 1.22\frac{1}{2} = 1.115
+\end{equation}
+
+\begin{equation}
+\delta K_1 = K_1\sqrt{\bigg (\frac{\delta h_1}{h_1}\bigg)^2 + \bigg (\frac{\delta h_2}{h_2}\bigg )^2}
+\end{equation}
+
+\begin{equation}
+\rightarrow \delta K_1 = 1.115\sqrt{\bigg (\frac{0.5}{4}\bigg)^2 + \bigg (\frac{\delta 1}{8}\bigg )^2} \approx 0.197
+\end{equation}
+
+Given the diameter of the mirror $d = 6.0m$, and two wavelengths $\lambda_{min} = 600nm, \lambda_{max} = 28.5\mu m$, we calculated the smallest physical size of an object JWST can resolve while observing at various distances. Table 1 shows the results of the calculations 
+
+\begin{deluxetable}{rll}
+    %\tablewidth{0pt}
+    \tablecaption{\label{tab:jwst}}
+    \tablecomments{JWST resolution }
+    \tablecolumns{3}
+    \tablehead{ Distance  & Using $\lambda_{min}$ & Using $\lambda_{max}$  } 
+        \startdata
+        $540 km$ & $6  \pm 1 cm$& $286  \pm 51 cm$\\
+        $1  AU$ & $16.7 \pm 2.95 km$    & $792 \pm 140 km$ \\
+        $8.5\times 10^3  Pc$ & $196 \pm 34.5 AU$    &$9.28\cdot10^{3} \pm 1.65\cdot10^{3}  AU$ \\
+        $4 \times 10^9  ly$ & $446 \pm 78.8 ly$ & $2.12\cdot10^{4} \pm 3.74\cdot10^{3} ly$ \\
+        \enddata
+\end{deluxetable}
+
+\section{Conclusions}
+\label{sec:conclusions}
+
+The experiments confirms that the phenomena diffraction occurs when light encounters an obstacle and shows that light has wave properties. Light that passes through a slit or light that encounters a barrier produces a linear diffraction pattern. Light that passes through a circular aperture will produce an Airy diffraction pattern. By our estimation of $K_1$ we have found a theoretical size of the Airy disk which sets a limit on the the angular resolution on the telescope. This limit is important because objects smaller that the Airy disk will be indistinguible. In other words, two seperate stars far away will apear as one, if the dot representing the star was smaller that the Airy disk.
+
+We had to use quite large uncertainties because the methods used in the experiments was rather primitive. Defining the uncartianty for the Airy disk was, to be hounest a little guess work because we had a hard time deciding on the best method for doing so. We ended up evaluationg the grayscale value and position of the pixels, making a ruff estimate.
+
+\begin{acknowledgements}
+  I would like to thank Aynar Drews for guiding us through the experimets as well as my lab partners Aram Salihi, Markus Bjørklund and Andres Helland.  
+\end{acknowledgements}
+
+\begin{thebibliography}{}
+
+%\bibitem[G{\'o}rski et al.(1994)]{gorski:1994} G{\'o}rski, K. M.,
+%  Hinshaw, G., Banday, A. J., Bennett, C. L., Wright, E. L., Kogut,
+%  A., Smoot, G. F., and Lubin, P.\ 1994, ApJL, 430, 89
+
+%\bibitem[G{\'o}rski et al.(1994)]{gorski:1994} G{\'o}rski, K. M.,
+%  Hinshaw, G., Banday, A. J., Bennett, C. L., Wright, E. L., Kogut,
+%  A., Smoot, G. F., and Lubin, P.\ 1994, ApJL, 430, 89
+
+\bibitem{assignment} 
+AST2210 - Lab exercise: Diffraction and angular resolution,
+\\\texttt{http://folk.uio.no/ainard/AST2210/diffraction/diffr\_lab.pdf}
+
+\bibitem{errorestimates} 
+A Summary of Error Propagnation,
+\\\texttt{http://ipl.physics.harvard.edu/wp-uploads/2013/03/PS3_Error_Propagation_sp13.pdf}
+
+
+
+
+\end{thebibliography}
+
+\end{document}

@@ -1,0 +1,347 @@
+\documentclass{emulateapj}
+%\documentclass[12pt,preprint]{aastex}
+
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{amsmath}
+\usepackage{epsfig,floatflt}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{color}
+ 
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+ 
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    }
+ 
+\lstset{style=mystyle}
+
+
+\begin{document}
+
+\title{Charge-coupled device - CCD}
+
+\author{Hans-Petter Harveg}
+
+\email{hanspepg@student.matnat.uio.no}
+
+\altaffiltext{1}{Institute of Theoretical Astrophysics, University of
+  Oslo, P.O.\ Box 1029 Blindern, N-0315 Oslo, Norway}
+
+
+%\date{Received - / Accepted -}
+
+\begin{abstract}
+In this experiment we went through the basics of operating a \textit{Charge-couple device (CCD)} cameras which is a digital technique for recording images. In this digital proccess, errors due to electronics do occur, which we have analyzed. We recorded data; a raw image and images used for analyzing the the images namely \textit{bias}, \textit{dark frames} and \textit{flat frames}. We have used the interactive data language \textit{IDL} to perform all image analysing and image proccesing to remove noise from the raw image and produced a cleaner image. The result cannot be detected by the naked eye, but analysis shows reduction in the final image noise. The procces of using CCD's for recording images shows promesing results with a quantum efficiency of up to $95\%$.
+\end{abstract}
+
+\keywords{ccd --- astronomy: photography, image analysis --- methods: experimental}
+
+\section{Introduction}
+\label{sec:introduction}
+  In astrophysics, we rely completely on information transmitted by signals from the universe. For this reason, the method of collecting these signals, namely photons is crucial. Using photographic plates, the quantum effiency is bound by a theoretical limit of about $0.5\% ~ 5\%$. By using semi conductor technology, we have managed to digitalize the process and developed what we call \textit{Charge-coupled device (CCD)}. By taking advantage of the photoelectric effect, we have been able to calculate a pixel value by counting electrons being released. This technique has proven to increase the quantum efficiency tremendioulsy. Experiments shows the quantum efficiency to be as high as up to $95\%$. Fig.1 shows a schematic view of a CCD. 
+
+\begin{figure}[H]
+\mbox{\epsfig{figure=../ccd.png,width=\linewidth,clip=}}
+\caption{A schematic view of a CCD. Electrons released due to the photoelectric effect is counted which is used to calculate a pixel value.}
+\label{fig:figure_ccd_setup}
+\end{figure}
+
+  Standard operations to process the "raw" image are corrections for \textit{bias}, \textit{dark current} and \textit{flat field}. 
+
+ % BIAS
+  The bias level is measured in total darkness and with the shortest exposure time possible. The image obtained only contains unwanted signal due to the electronics that elaborate the sensor data, and not unwanted signal from charge accumulation (\textit{dark current}) within the sensor itself. One would expect this level to correspond to a pixel value of 0 but in practice this level is set to a small value to account for digitization noise. In theory, the bias level should be identical for every pixel since no photoelectrons nor thermal electons are generated. However, in reality, teh bias level varies from pixel to pixel caused by various sources of noise.
+
+% Dark current
+  A dark current is generated during integration due to generation of thermal electrons. The dark current is measured by blocking the light and exposuring with the same integration time as the raw image that is to be corrected.
+
+% Flat fieldt
+  Flat field correction compensated for sensitivity variations over the field of view. 
+
+  \textit{bias} and \textit{dark current} are additive errors, while \textit{flat field} is a multiplicative error meaning we need to subtract for \textit{bias} and \textit{dark current} and divide by the \textit{flat frames}.
+
+
+
+%In the CCD camera sensor, a \textit{pixel clock} describes the speed of the complementary signals which are used to move the charge packets through the shift registers towards the read out amplifyers.
+
+%Chromatic aberration occurs because lenses have different refractive indices for different wavelengths of light.
+
+
+\section{Method}
+\label{sec:method}
+
+\subsection{Camera properties}
+
+First, we used a color Edmund Optics USB camera in a set-up with a white lamp, a thin singlet lens and a microscope objective (fig.2). We connected the camera to the computer and used a graphical user interface to adjust the image exposure time and to adjust the amount of light being detected. When changing the focus, we could see the effect of \textit{chromatic aberration} (fig.3), which is when different wavelenghts will have slightly different focal point. To compensate for chromatic aberration we adjusted the objective location.
+
+\begin{figure}[H]
+\mbox{\epsfig{figure=../CCD_setup.png,width=\linewidth,clip=}}
+\caption{Edmund Optics USB camera in a set-up with a white lamp, a thin singlet lens and a microscope objective.}
+\label{fig:figure_ccd_setup}
+\end{figure}
+
+\begin{figure}[H]
+\mbox{\epsfig{figure=../RGB_focus_setup.png,width=\linewidth,clip=}}
+\caption{The figure shows the phenomena of chromatic aberration. Different wavelangth will have a slight different focus point}
+\label{fig:figure_rgb_focus_setup}
+\end{figure}
+
+Next we used a monochromatic Edmund Optics USB camera in a setup with a laser light and a $100\mu m$ slit. From the diffraction pattern in the live view of the camera, we measured the width of the pixels in $\mu m$, using the formula for single-slit diffraction
+
+\begin{equation}
+a\sin{\theta} = m\lambda
+\end{equation}
+
+where $a$ is the slit width, and $m$ is the order of the minimum of the diffraction pattern. Using small angula approximation, we can write $sin{\theta}$ as $\frac{h}{L}$, where $h$ is the distance to the first minima of the diffraction pattern and $L$ is the distance from the slit to the camera. We used this to find an expression for $h$ and calculated the pixel width by equation (3).
+
+\begin{equation}
+h = \frac{Lm\lambda}{a}
+\end{equation}
+
+\begin{equation}
+w_{px} = \frac{h}{N_{px}}
+\end{equation}
+
+where $N_{px}$ is the number of pixels between minima diveded by to. We used MATLAB to approixmate the number of pixels to the first minima in the diffraction pattern.
+
+
+\subsection{Recording data; bias, dark frames, flat frames}
+
+To record a proper image, one needs to make sure the image is well exposed. The signal level should be as high as possible in order to minimize noise but one should aoid over-exposure. One should avoid to get too close to the maximum exposure level in order to avoid non-linear behaviour of the sensor. We recorded a well exposed image of the diffraction pattern, writing down the exposure time, frame rate and pixel clock. We switched off the laser light and put the dust cover on the camera, removed the slit from the beam, then recorded the following images:
+
+\begin{itemize}
+\item 2 bias frames by turning down the exposure time to the minimum value
+\item 5 dark frams 
+\item 1 dark frame at the maximum exposure time
+\item 16 flat frames
+\item 5 dark frames with same exposure time as the flat frames
+\end{itemize}
+
+Bias and dark frame was taken with the dust cover on.
+
+To record the flat field images, we used a simple A4-size white sheet of paper to reflect to reflect light from the ceiling into the camera. To make sure the image was well exposed, we adjusted the integration time so the average pixel value was between halfway to one-third to the maximum output of the camera.
+
+
+\subsection{Image analysis}
+
+For the image analysis, we used the interactive data language IDL. First, we loaded one bias frame and the dark frame with maximum exposurte time and compared the two images
+
+\begin{itemize}
+\item computed average pixel value of the two images.
+\item found minimum and maximum pixel values.
+\item ploted histograms of the pixel values
+\item located the pixel coordinate with the maximum value for both the bias and the dark frame.
+\end{itemize}
+
+  Next, we loaded both bias frames, $B_1$ and $B_2$
+\begin{itemize}
+\item added them togetter and measured the mean value, $\bar{B}_1 + \bar{B}_2$ of the central region, which we defined to be region in the middle of the frames with each side $300$ px wide/tall.
+\item subtracted one \textit{bias frame} from the other and measured the standard deviation for the centeral region.
+\end{itemize}
+
+  Next, we repeated the proces for the \textit{flat frames}: computed the centeral region and the noise for the two flat frames.
+
+  Next, using equation (4), we computed the conversion factor $g$ and used the result to compute the readout noise in electrons, which is the factor $g$ times the standard eviation for the bias, $g\sigma_{bias}$
+
+\begin{equation}
+g = \frac{(\bar{F}_1 + \bar{F}_2) - (\bar{B}_1 + \bar{B}_2)}{(\sigma_{F_1-F_2}^2) - (\sigma_{B_1-B2}^2)}[electrons/AU]
+\end{equation}
+
+  From the 16 flat frames we recored, we could see how the normalized noise decreased as more flat frames was added.
+
+  Finally, we corrected the diffraction image by first correcting from dark current, and then divide by the master normalized flat.
+
+
+\section{Data}
+\label{sec:data}
+
+\begin{figure}[H]
+\mbox{\epsfig{figure=../interference_1.png,width=\linewidth,clip=}}
+\caption{The figure shows the diffraction pattern where the exposure time has been adjusted for the best image.}
+\label{fig:figure_interference_1}
+\end{figure}
+
+\begin{figure}[H]
+\mbox{\epsfig{figure=../diffraction_distance.png,width=\linewidth,clip=}}
+\caption{The figure shows the pixel positions of the two first locations of the minima of the interference pattern.}
+\label{fig:figure_interference_plot}
+\end{figure}
+
+\section{Results}
+\label{sec:results}
+
+\subsection{Camera}
+
+Fig. 6 shows the result of moving the objective location due to \textit{chromatic aberratoin}.
+
+By equations (1), (2) and (3) we found the width of the pixels to be $5.797435897 \pm 0.2439008863 \mu m$
+
+\begin{equation}
+h = \frac{L\lambda}{a} \rightarrow \frac{7\times 10^{-2}\times 645 nm}{100\mu m}
+\end{equation}
+
+\begin{align}
+w_{px} &= \frac{h}{N_{px}} \rightarrow \frac{7\times 10^{-2}m}{78}\\ &\approx5.797435897 \pm 0.2439008863  \mu m
+\end{align}
+
+
+\subsection{Result of the recorded data}
+
+Fig. 4 shows the recorded image of the diffraction pattern, table 1 shows the  exposure time, frame rate and pixel clock.
+
+\subsection{Image analysis}
+
+  Table 2 shows the averate pixel value, minimum and maximum pixel value of the two bias images and the dark frame with maximum exposure time. Fig. 7 shows histograms of the two images ploted in one figure. The pixel coordinate with the maximum value is the same for both the bias frame, and for the dark current. Table 1 shows the results.
+
+  Next, using equation (4), we computed the conversion factor $g$ and used the result to compute the readout noise in electrons, which is the factor $g$ times the standard eviation for the bias, $g\sigma_{bias}$
+
+\begin{equation}
+g = \frac{(\bar{F}_1 + \bar{F}_2) - (\bar{B}_1 + \bar{B}_2)}{(\sigma_{F_1-F_2}^2) - (\sigma_{B_1-B2}^2)}[electrons/AU]
+\end{equation}
+
+  Fig.8 shows the reduction in noise as more flat frames was added.
+
+  Fig.9 shows the corrected image from first correcting from dark current, then divide by the master normalized flats.
+
+
+\begin{figure}[H]
+\mbox{\epsfig{figure=../RGB_focus.png,width=\linewidth,clip=}}
+\caption{The figure shows the effect from chromatic aberration by changing the location of the objective. The three images are three different snapshots done after adjusting the objective location.}
+\label{fig:figure_rgb_focus}
+\end{figure}
+
+\begin{figure}[H]
+\mbox{\epsfig{figure=../bf_df_hist.png,width=\linewidth,clip=}}
+\caption{The figure shows the histograms for bias frame two and the dark frame with the highest exposure time.}
+\label{fig:figure_rgb_focus}
+\end{figure}
+
+\begin{figure}[H]
+\mbox{\epsfig{figure=../decreasing_normalized_noise.png,width=\linewidth,clip=}}
+\caption{The figure shows the rerudction in noise.}
+\label{fig:figure_interference_1}
+\end{figure}
+
+\begin{figure}[H]
+\mbox{\epsfig{figure=../interference_1.png,width=\linewidth,clip=}}
+\caption{The figure shows the corrected image of the diffraction pattern.}
+\label{fig:figure_interference_1}
+\end{figure}
+
+
+
+
+%\begin{deluxetable}{cccc}
+%    %\tablewidth{0pt}
+%    \tablecaption{\label{tab:jwst}}
+%    \tablecomments{JWST resolution }
+%    %\tablecolumns{4}
+%    \tablehead{ a & b & c & d  } 
+%        \startdata
+%        1 & 2 & 3 & 4\\
+%        4 & 5 & 6 & 7\\
+%        7 & 8 & 9 & 10\\
+%        \enddata
+%\end{deluxetable}
+
+\begin{deluxetable}{cccc}
+    \tablecaption{\label{tab:settings}}
+    \tablecomments{Settings for recorded images}
+    \tablecolumns{4}
+    \tablehead{Image(s) & Pixel clock & Framerate & Exposure time}
+        \startdata
+        Diffraction image 1 & $33 Mhz$ & $90 FPS$ & $0.097ms$\\
+        Diffraction image 2 & $40 Mhz$ & $90 FPS$ & $1.164ms$\\
+        Flat frames & $5 Mhz$ & $90 FPS$ & $13.474ms$\\
+        \enddata
+\end{deluxetable}
+
+\begin{deluxetable}{ccccc}
+    \tablecaption{\label{tab:jwst}}
+    \tablecomments{Estimate from bias frame 1 and the dark frame with the highest exposure time}
+    \tablehead{ Image & Average & Min & Max & Location of max pixel} 
+        \startdata
+        BIAS frame & 8.8225482 & 6.0 & 17.0 & (427,40)\\
+        Dark frame & 8.8420684 & 6.0 & 18.0 & (427,40)\\
+        \enddata
+\end{deluxetable}
+
+All data used in the experiment can be found on GitHub \url{https://github.com/Spillerom/AST2210/tree/master/ccd}.
+
+\section{Conclusions}
+\label{sec:conclusions}
+
+  Digitalizing the proccess of regording an image using \textit{Charge-couple devices (CCD's)} shows promesing results with a quantum efficiency of up to 95\%. 
+
+  By examining plots of the noise in the image before and after the image has been corrected shows noise is beeing reduced. However, what seems to be imperfections in the optical path did not disappear in the corrected image. The conclution must be that either the error does not come from irriggularities on the lens, but occured earlier on the path or that the recorded flat frames was over exposted. In both cases, flat frame correction will not have any effect and cannot be used to correct the image.
+
+For short exposure times, noise due to \textit{dark current} does not seem to have large implications on the recorded image, but as the integration time increases, noise will increase due to \textit{dark current}. Experiments needs to be done in order to see the effect from this.
+
+Compared to photographic plates, using \textit{Charge-couple device (CCD)} to record images improve image quality tremendiously. Noise due to \textit{bias}, \textit{dark current} and \textit{flat fields} do occur, however, using the techniques described above will reduce the amount noise.
+
+
+\begin{acknowledgements}
+  I want to thank Aynar Drews for guiding us through the experiment as well as helping out with IDL and my lab partners Markus Bjørklund and Andreas Helland for constructive discusions. Also a special thank to Andreas Helland for letting me use all his \textit{beatiful} figures.
+\end{acknowledgements}
+
+\begin{thebibliography}{}
+
+% TODO: REMOVE THE COMMENTS BELLOW
+\bibitem{assignment} 
+AST2210 - Lab exercise: CCD,
+\\\texttt{http://folk.uio.no/ainard/AST2210/CCDLab/ccd\_lab.pdf}
+
+%\bibitem{errorestimates} 
+%A Summary of Error Propagnation,
+%\\\texttt{http://ipl.physics.harvard.edu/wp-uploads/2013/03/PS3_Error_Propagation_sp13.pdf}
+
+
+\end{thebibliography}
+
+\begin{appendix}
+
+\section{Code}
+
+\subsection{Listing 1: Code for calculating the pixel position of the minima of the diffraction pattern}
+\lstinputlisting[language=Octave]{../diffraction.m}
+
+\subsection{Listing 2: Code for computing one average, min and max pixel values and plot histograms of pixel values for one bias frame and one dark frame.}
+\lstinputlisting[language=IDL]{../excercise6.pro}
+
+\subsection{Listing 3: Code for loading two bias frams. Adding them togetter and measure the mean value of the centeral region.}
+\lstinputlisting[language=IDL]{../excercise7.pro}
+
+\subsection{Listing 4: Code for loading two flat frames. Adding them togetter and measure the mean value of the centeral regian.}
+\lstinputlisting[language=IDL]{../excercise9.pro}
+
+\subsection{Listing 5: Code for computing the conversation fagtor $g$.}
+\lstinputlisting[language=IDL]{../excercise10.pro}
+
+\subsection{Listing 6: Code for computing the readout noise in electrons.}
+\lstinputlisting[language=IDL]{../excercise11.pro}
+
+\subsection{Listing 7: Code for computing normalized noise from 16 flats.}
+\lstinputlisting[language=IDL]{../excercise12.pro}
+
+\subsection{Listing 8: Code for correcting the raw diffracton pattern image.}
+\lstinputlisting[language=IDL]{../excercise13.pro}
+
+\end{appendix}
+
+\end{document}

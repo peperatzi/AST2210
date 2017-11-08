@@ -1,0 +1,20 @@
+\BOOKMARK [1][-]{section.1}{Introduction}{}% 1
+\BOOKMARK [1][-]{section.2}{Method}{}% 2
+\BOOKMARK [2][-]{subsection.2.1}{Camera properties}{section.2}% 3
+\BOOKMARK [2][-]{subsection.2.2}{Recording data; bias, dark frames, flat frames}{section.2}% 4
+\BOOKMARK [2][-]{subsection.2.3}{Image analysis}{section.2}% 5
+\BOOKMARK [1][-]{section.3}{Data}{}% 6
+\BOOKMARK [1][-]{section.4}{Results}{}% 7
+\BOOKMARK [2][-]{subsection.4.1}{Camera}{section.4}% 8
+\BOOKMARK [2][-]{subsection.4.2}{Result of the recorded data}{section.4}% 9
+\BOOKMARK [2][-]{subsection.4.3}{Image analysis}{section.4}% 10
+\BOOKMARK [1][-]{section.5}{Conclusions}{}% 11
+\BOOKMARK [1][-]{appendix.A}{Code}{}% 12
+\BOOKMARK [2][-]{subsection.A.1}{Listing 1: Code for calculating the pixel position of the minima of the diffraction pattern}{appendix.A}% 13
+\BOOKMARK [2][-]{subsection.A.2}{Listing 2: Code for computing one average, min and max pixel values and plot histograms of pixel values for one bias frame and one dark frame.}{appendix.A}% 14
+\BOOKMARK [2][-]{subsection.A.3}{Listing 3: Code for loading two bias frams. Adding them togetter and measure the mean value of the centeral region.}{appendix.A}% 15
+\BOOKMARK [2][-]{subsection.A.4}{Listing 4: Code for loading two flat frames. Adding them togetter and measure the mean value of the centeral regian.}{appendix.A}% 16
+\BOOKMARK [2][-]{subsection.A.5}{Listing 5: Code for computing the conversation fagtor g.}{appendix.A}% 17
+\BOOKMARK [2][-]{subsection.A.6}{Listing 6: Code for computing the readout noise in electrons.}{appendix.A}% 18
+\BOOKMARK [2][-]{subsection.A.7}{Listing 7: Code for computing normalized noise from 16 flats.}{appendix.A}% 19
+\BOOKMARK [2][-]{subsection.A.8}{Listing 8: Code for correcting the raw diffracton pattern image.}{appendix.A}% 20

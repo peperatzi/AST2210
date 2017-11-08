@@ -1,0 +1,7 @@
+; The command to convert an "eps" file to a "pdf" file on beehive is given below:
+
+ps2pdf -dEPSCrop my_test_file.eps my_test_file.pdf 
+
+; If you want to run this inside an IDL procedure/script, precede it with the $ symbol:
+
+$ps2pdf -dEPSCrop my_test_file.eps my_test_file.pdf 
