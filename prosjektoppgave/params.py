@@ -16,6 +16,15 @@ n_min      =  -1.
 n_max      =   3.
 n_numpoint =  40
 
+
+# MCMC specifications
+num_mcmc_iterations = 1e3
+Q_guess = 1
+n_guess = -1
+Q_step = (Q_max - Q_min)/q_numpoint
+n_step = (n_max - n_min)/n_numpoint
+
+
 # Input and output file paths
 cmbfile    = 'data/cobe_dmr_%dGHz_n%d.npy'%(band,nside)
 beamfile   = 'data/cobe_dmr_beam.npy'

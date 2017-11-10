@@ -30,19 +30,7 @@ def get_noise_cov(rms):
     Compute the noise covariance matrix from the pixel standard deviations
     """
     # 1: Compute a matrix with element (i,i) = sigma_i^2
-
-    #N_cov = (rms**2)*np.kron(len(rms),len(rms))
-    N_cov = np.diag(np.power(rms,2))
-
-    # Test cov
-    #for i in range(len(N_cov)):
-    #    for j in range(len(N_cov[0])):
-    #        val = N_cov[i,j]
-    #        if i!=j and val!=0:
-    #            print "ZERO DETECTED!"
-    #        if i==j:
-    #            print val
-
+    N_cov = np.diag(rms**2)
     return N_cov
 
 
@@ -74,7 +62,7 @@ def get_C_ell_model(Q,n,lmax):
     # 1: Define array for power spectrum
     C_ell = np.zeros(lmax+1)
     # 2: Compute quadrupole (ell=2) term
-    C_ell[2] = 4.*np.pi/5.*np.power(Q,2)
+    C_ell[2] = np.square(Q)*4.*np.pi/5.
 
     #d 3: Compute multipoles 3 through lmax recursively
     for l in range(3,lmax+1):
@@ -126,9 +114,6 @@ def get_signal_cov(C_ell, beam, pixwin, p_ell_ij):
     '''
     lmax = len(C_ell) - 1
 
-
-    #print S_cov
-
     # The "lamer-way":
     #S_ij = np.zeros_like(p_ell_ij[:,:,0])
     #for i in range(len(S_ij)):
@@ -136,28 +121,21 @@ def get_signal_cov(C_ell, beam, pixwin, p_ell_ij):
     #        for l in range(lmax):
     #            S_ij[i,j] += (2.0*l + 1)*((beam[l]*pixwin[l])**2)*C_ell[l]*p_ell_ij[i,j,l]
     #print S_ij
+    #S_cov = S_ij
+    
 
     # The "dude-way":
     S_cov = np.zeros_like(p_ell_ij[:,:,0])
-    #l = np.arange(lmax+1)
+    l = np.arange(lmax+1)
     for l in range(lmax):
         S_cov[:,:] += (2.*l + 1.)*(np.power(beam[l]*pixwin[l],2))*C_ell[l]*p_ell_ij[:,:,l]
 
-    S_cov /= (4.*np.pi)
+    # The "daniel-way":
+    #ell = np.arange(lmax+1)
+    #sum_over_ell = np.sum((2.*ell + 1.)*(np.power(beam*pixwin,2))*C_ell)
+    #S_cov = sum_over_ell*np.sum(p_ell_ij,axis=2)
+    #S_cov = np.einsum('ijl,...l->ij',p_ell_ij,ell_dep_array)
 
-    #print S_cov
-
-
-    # Test S_cov
-    #for i in range(len(S_cov)):
-    #    for j in range(len(S_cov[0])):
-    #        val = S_cov[i,j]
-    #        if i!=j:
-    #            print val
-
-
-    # Debugging the size of the matrix
-    #print "Size of S_ij-matrix: %gx%g" % (len(S_cov),(len(S_cov[0])))
 
     # 1: Compute all the elements of the sum over ell, as arrays
 
@@ -165,7 +143,7 @@ def get_signal_cov(C_ell, beam, pixwin, p_ell_ij):
 
     # 3: Compute the covariance matrix by an appropriate inner product
 
-    return S_cov
+    return S_cov/(4.*np.pi)
 
 def get_lnL(data, cov):
     '''
@@ -179,19 +157,8 @@ def get_lnL(data, cov):
     method discussed in the project description notes.
     '''
 
-    #print "Coveriance-matrix in get_lnL():"
-
-    # Test cov
-    #for i in range(len(cov)):
-    #    for j in range(len(cov[0])):
-    #        val = cov[i,j]
-    #        if val==0:
-    #            print "ZERO DETECTED!"
-    #        if i==j and val<=0:
-    #            print "DIAGONAL VALUES FAILD!"
-
     # 1: Cholesky-decompose C into a lower triangular matrix L, using scipy.linalg.cholesky
-    L = spl.cholesky( cov )
+    L = spl.cholesky( cov, lower = True )
 
     # 2: Compute log(det(C)) from L
     logdet = np.linalg.slogdet(L)[1]*2
@@ -201,11 +168,11 @@ def get_lnL(data, cov):
 
     # 4: Assemble -2*lnL using the components just computed
     C_inv = np.dot(np.transpose(x),x)
-    d_C_d = np.dot(np.transpose(data),np.dot(C_inv,data))
+    c_sq = np.dot(np.transpose(data),np.dot(C_inv,data))
         
-    result = (d_C_d + logdet)
-
-    print "Result = %g" % (result)
+    result = (c_sq + logdet)
+    print "chi_sq = %g" % (c_sq)
+    print "lnL = %g" % (result)
 
     return result
 

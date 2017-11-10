@@ -52,45 +52,72 @@ if __name__ == "__main__":
     # ---------------------------------------
     print 'Starting likelihood evaluation loop'
 
+
+
+    # MCMC: Metropolis-Hastings:
+    # ---------------------------------------
+
+    def calc_lnN(Q, n):
+        #time_b = timeit.default_timer()
+        Cl_model = utils.get_C_ell_model(Q,n,lmax)
+        #time_c = timeit.default_timer()
+        S_cov = utils.get_signal_cov(Cl_model,beam,pixwin,p_ell_ij)
+        cov = S_cov + N_cov + F_cov
+        #time_d = timeit.default_timer()
+        return  utils.get_lnL(cmb,cov)
+        #time_e = timeit.default_timer()
+
+
+
     # Defining grid based on param file values
-    lnL = np.zeros((q_numpoint,n_numpoint))
-    Q_values = np.linspace(q_min,q_max,q_numpoint)
-    n_values = np.linspace(n_min,n_max,n_numpoint)
+    #lnL = np.zeros((q_numpoint,n_numpoint))
+    #Q_values = np.linspace(q_min,q_max,q_numpoint)
+    #n_values = np.linspace(n_min,n_max,n_numpoint)
+    lnL = np.zeros(int(num_mcmc_iteratons))
+    Q_valus = np.zeros(int(num_mcmc_iterations))
+    n_valus = np.zeros(int(num_mcmc_iterations))
+
+    # Step 1: Guess the first values
+    Q_values[0] = Q_guess
+    n_values[0] = n_guess
+
+    # "Throw the dice": This is used when we calculate a probability of 
+    u = np.random.rand(int(num_mcmc_iteratoins))
 
     # Making an output filename for ASCII format
     resultfile_dat = resultfile[:resultfile.rfind('.')] + '.dat'
 
     # Main computation loop
-    for i,Q in enumerate(Q_values):
-        for j,n in enumerate(n_values):
-            #Q = 18.
-            #n = 1.
-            print 'Now computing lnL for Q=%f, n=%f'%(Q,n)
-            time_b = timeit.default_timer()
-            # Computing model curve
-            Cl_model = utils.get_C_ell_model(Q,n,lmax)
-            time_c = timeit.default_timer()
-            # Computing signal covariance matrix for current model
-            S_cov = utils.get_signal_cov(Cl_model,beam,pixwin,p_ell_ij)
-            # Assembling to total covariance matrix
-            cov = S_cov + N_cov + F_cov
-            time_d = timeit.default_timer()
-            # Solving for loglikelihood
-            lnL[i,j] = utils.get_lnL(cmb,cov)
-            time_e = timeit.default_timer()
+    for i in range(1,int(num_mcmc_iteratoins))
+        lnL_new = calc_lnN(Q_values[i], n_values[i])
 
-            if debug_mode:
-                # Printing some time usage
-                print 'Time spent:'
-                print 'Model computation: %f sec'%(time_c - time_b)
-                print 'Signal cov computation: %f sec'%(time_d - time_c)
-                print 'Loglikelihood computation: %f sec'%(time_e - time_d)
-                print 'In total per grid point: %f sec'%(time_e - time_b)
-                # In-loop printing of lnL, so we have something to look at
-                # even if the job isn't finished
-                of = open(resultfile_dat,'a')
-                of.write("%f %f %f\n"%(Q,n,-0.5*lnL[i,j]))
-                of.close()
+        Q_new = Q_value[i-1] - Q_value[i]
+        n_new = n_value[i-1] - n_value[i]
+
+        throw_away = np.min(1, )
+
+        # This is what makes this routine work! We test our "throw-away-probability"
+        # against a random variable. This will result in some "not desired" values,
+        # which will result in the outher values of the plot
+        if u[i] < throw_away:
+            lnL[i+1] = lnL_new
+        else:
+            lnL[i+1] = lnL[i]
+
+
+        if debug_mode:
+            # Printing some time usage
+            print 'Time spent:'
+            print 'Model computation: %f sec'%(time_c - time_b)
+            print 'Signal cov computation: %f sec'%(time_d - time_c)
+            print 'Loglikelihood computation: %f sec'%(time_e - time_d)
+            print 'In total per grid point: %f sec'%(time_e - time_b)
+            # In-loop printing of lnL, so we have something to look at
+            # even if the job isn't finished
+            of = open(resultfile_dat,'a')
+            of.write("%f %f %f\n"%(Q,n,-0.5*lnL[i,j]))
+            of.close()
+
 
             
     lnL *= -0.5
