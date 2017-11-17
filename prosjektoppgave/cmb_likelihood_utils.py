@@ -18,6 +18,7 @@
 #  before the program becomes functional.
 #
 
+import sys
 import numpy as np
 from scipy.special import legendre
 import scipy.linalg as spl
@@ -31,6 +32,8 @@ def get_noise_cov(rms):
     """
     # 1: Compute a matrix with element (i,i) = sigma_i^2
     N_cov = np.diag(rms**2)
+    #print np.sum(N_cov)
+    #sys.exit(0)
     return N_cov
 
 
@@ -49,9 +52,6 @@ def get_foreground_cov(x,y,z):
     dipole = np.outer(x,x) + np.outer(y,y) + np.outer(z,z)
     return large_value * (monopole + dipole)
 
-#def gamma(n):
-#    return factorial(n-1)
-
 def get_C_ell_model(Q,n,lmax):
     """
     To be completed:
@@ -62,11 +62,20 @@ def get_C_ell_model(Q,n,lmax):
     # 1: Define array for power spectrum
     C_ell = np.zeros(lmax+1)
     # 2: Compute quadrupole (ell=2) term
-    C_ell[2] = np.square(Q)*4.*np.pi/5.
+    C_ell[2] = (Q**2)*(4.*np.pi/5.)
+    #print np.sum(C_ell[2])
+    #sys.exit(0)
 
     #d 3: Compute multipoles 3 through lmax recursively
     for l in range(3,lmax+1):
-        C_ell[l] = C_ell[l-1]*(2.*l + n-1.)/(2.*l+5.-n)
+        C_ell[l] = C_ell[l-1]*(2.*l + n-1)/(2.*l+5-n)
+        #C_ell[l] = C_ell[l-1]*(l + (n-1)/2.)/(2.*l+5-n)
+
+    #print np.sum(C_ell)
+    #sys.exit(0)
+
+    # -> 3.88
+
 
     return C_ell
 
@@ -125,10 +134,10 @@ def get_signal_cov(C_ell, beam, pixwin, p_ell_ij):
     
 
     # The "dude-way":
-    S_cov = np.zeros_like(p_ell_ij[:,:,0])
-    l = np.arange(lmax+1)
-    for l in range(lmax):
-        S_cov[:,:] += (2.*l + 1.)*(np.power(beam[l]*pixwin[l],2))*C_ell[l]*p_ell_ij[:,:,l]
+    #S_cov = np.zeros_like(p_ell_ij[:,:,0])
+    #l = np.arange(lmax+1)
+    #for l in range(lmax):
+    #    S_cov[:,:] += (2.*l + 1.)*(np.power(beam[l]*pixwin[l],2))*C_ell[l]*p_ell_ij[:,:,l]
 
     # The "daniel-way":
     #ell = np.arange(lmax+1)
@@ -136,12 +145,18 @@ def get_signal_cov(C_ell, beam, pixwin, p_ell_ij):
     #S_cov = sum_over_ell*np.sum(p_ell_ij,axis=2)
     #S_cov = np.einsum('ijl,...l->ij',p_ell_ij,ell_dep_array)
 
+    # The "hans-kristian-way":
+    vecell = 2.*np.arange(lmax+1, dtype=float) + 1.
+    vecbeam = np.square(np.multiply(beam, pixwin))
+    vec = np.multiply(vecell, vecbeam)
+    vec = np.multiply(vec, C_ell)
 
     # 1: Compute all the elements of the sum over ell, as arrays
 
     # 2: Assemble a single array with all the ell terms which are independent of (i,j)
 
     # 3: Compute the covariance matrix by an appropriate inner product
+    S_cov = np.dot(p_ell_ij, vec)
 
     return S_cov/(4.*np.pi)
 
@@ -161,16 +176,19 @@ def get_lnL(data, cov):
     L = spl.cholesky( cov, lower = True )
 
     # 2: Compute log(det(C)) from L
-    logdet = np.linalg.slogdet(L)[1]*2
+    #logdet = np.linalg.slogdet(L)[1]*2
+    logdet = 2.*np.sum(np.log(np.diag(L)))
 
     # 3: Solve for L^-1 d using scipy.linalg.solve_triangular
-    x = spl.solve_triangular(L, np.identity(len(L)))
+    #x = spl.solve_triangular(L, np.identity(len(L)))
+    x = spl.solve_triangular(L, data, lower=True)
 
     # 4: Assemble -2*lnL using the components just computed
     C_inv = np.dot(np.transpose(x),x)
     c_sq = np.dot(np.transpose(data),np.dot(C_inv,data))
         
-    result = (c_sq + logdet)
+    #result = (c_sq + logdet)
+    result = np.dot(x.T,x) + logdet
     print "chi_sq = %g" % (c_sq)
     print "lnL = %g" % (result)
 

@@ -1,9 +1,10 @@
 # PARAMETER FILE FOR CMB_LIKELIHOOD
 
 # Basic run parameters
-debug_mode = True # or False. debug_mode prints lnL to .dat file in-loop, and prints time usage
-#debug_mode = False
+#debug_mode = True # or False. debug_mode prints lnL to .dat file in-loop, and prints time usage
+debug_mode = False
 nside      = 16
+#lmax       = 5
 lmax       = 47
 band       = 53 # or 90, in GHz
 #band       = 90
@@ -19,9 +20,9 @@ n_numpoint =  40
 
 # MCMC specifications
 num_mcmc_iterations = 1e3
-Q_guess = 1
+q_guess = 1
 n_guess = -1
-Q_step = (Q_max - Q_min)/q_numpoint
+q_step = (q_max - q_min)/q_numpoint
 n_step = (n_max - n_min)/n_numpoint
 
 

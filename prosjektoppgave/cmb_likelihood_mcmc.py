@@ -53,9 +53,14 @@ if __name__ == "__main__":
     print 'Starting likelihood evaluation loop'
 
 
+    # Making an output filename for ASCII format
+    resultfile_dat = resultfile[:resultfile.rfind('.')] + '.dat'
+
+
 
     # MCMC: Metropolis-Hastings:
     # ---------------------------------------
+
 
     def calc_lnN(Q, n):
         #time_b = timeit.default_timer()
@@ -69,42 +74,53 @@ if __name__ == "__main__":
 
 
 
+
     # Defining grid based on param file values
     #lnL = np.zeros((q_numpoint,n_numpoint))
-    #Q_values = np.linspace(q_min,q_max,q_numpoint)
+    #q_values = np.linspace(q_min,q_max,q_numpoint)
     #n_values = np.linspace(n_min,n_max,n_numpoint)
-    lnL = np.zeros(int(num_mcmc_iteratons))
-    Q_valus = np.zeros(int(num_mcmc_iterations))
-    n_valus = np.zeros(int(num_mcmc_iterations))
+    lnL = np.zeros(int(num_mcmc_iterations))
+    q_values = np.zeros(int(num_mcmc_iterations))
+    n_values = np.zeros(int(num_mcmc_iterations))
 
-    # Step 1: Guess the first values
-    Q_values[0] = Q_guess
+    # Guess the first values
+    q_values[0] = q_guess
     n_values[0] = n_guess
 
-    # "Throw the dice": This is used when we calculate a probability of 
-    u = np.random.rand(int(num_mcmc_iteratoins))
-
-    # Making an output filename for ASCII format
-    resultfile_dat = resultfile[:resultfile.rfind('.')] + '.dat'
+    # Precalc probabilities for MCMC
+    u = np.random.rand(int(num_mcmc_iterations))
+    q_rand = np.random.normal(size=int(num_mcmc_iterations))
+    n_rand = np.random.normal(size=int(num_mcmc_iterations))
 
     # Main computation loop
-    for i in range(1,int(num_mcmc_iteratoins))
-        lnL_new = calc_lnN(Q_values[i], n_values[i])
+    for i in range(1,int(num_mcmc_iterations)):
+        # Chose next location
+        q_new = q_values[i-1] + q_step*q_rand[i]
+        n_new = n_values[i-1] + n_step*n_rand[i]
 
-        Q_new = Q_value[i-1] - Q_value[i]
-        n_new = n_value[i-1] - n_value[i]
+        # Pick value at location
+        lnL_new = calc_lnN(q_new, n_new)
 
-        throw_away = np.min(1, )
+        # alpha = min(1, ...)
+        diff = lnL_new - lnL[i-1]
+        if diff >= 0:
+            alpha = 1.
+        else:
+            alpha = np.exp(diff)
 
-        # This is what makes this routine work! We test our "throw-away-probability"
+        # This is what makes this routine work! We test our "throw-away-probability (alpha)"
         # against a random variable. This will result in some "not desired" values,
         # which will result in the outher values of the plot
-        if u[i] < throw_away:
-            lnL[i+1] = lnL_new
+        if u[i] < alpha:
+            lnL[i] = lnL_new
+            q_values[i] = q_new
+            n_values[i] = n_new
         else:
-            lnL[i+1] = lnL[i]
-
-
+            lnL[i-1] = lnL[i]
+            q_values[i-1] = q_new
+            n_values[i-1] = n_new
+ 
+        # 
         if debug_mode:
             # Printing some time usage
             print 'Time spent:'
@@ -117,23 +133,21 @@ if __name__ == "__main__":
             of = open(resultfile_dat,'a')
             of.write("%f %f %f\n"%(Q,n,-0.5*lnL[i,j]))
             of.close()
-
-
             
     lnL *= -0.5
     print 'Total runtime: %f seconds'%(timeit.default_timer() - runtime_start)
 
     # Saving full likelihood in numpy array format. This is faster and easier
     # to read in later, for visualization
-    np.save(resultfile,np.vstack([Q_values.T,n_values.T,lnL]))
+    np.save(resultfile,np.vstack([q_values.T,n_values.T,lnL]))
 
     # Adding a dump to ASCII file as well, in case you prefer non-python visualization
-    if not debug_mode:
-        of = open(resultfile_dat,'w')
-        for i,Q in enumerate(Q_values):
-            for j,n in enumerate(n_values):
-                of.write("%f %f %f\n"%(Q,n,lnL[i,j]))
-        of.close()
+    #if not debug_mode:
+    #    of = open(resultfile_dat,'w')
+    #    for i,Q in enumerate(q_values):
+    #        for j,n in enumerate(n_values):
+    #            of.write("%f %f %f\n"%(Q,n,lnL[i,j]))
+    #    of.close()
                 
         
 
