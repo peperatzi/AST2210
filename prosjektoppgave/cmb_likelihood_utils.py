@@ -189,8 +189,8 @@ def get_lnL(data, cov):
         
     #result = (c_sq + logdet)
     result = np.dot(x.T,x) + logdet
-    print "chi_sq = %g" % (c_sq)
-    print "lnL = %g" % (result)
+    #print "chi_sq = %g" % (c_sq)
+    #print "lnL = %g" % (result)
 
     return result
 
