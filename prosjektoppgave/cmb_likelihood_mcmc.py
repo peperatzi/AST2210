@@ -6,7 +6,7 @@ import cmb_likelihood_utils as utils
 if __name__ == "__main__":
     if len(sys.argv)<2:
         print 'Wrong number of input arguments.'
-        print 'Usage: python cmb_likelihood.py params.py'
+        print 'Usage: python cmb_likelihood_mcmc.py params_mcmc.py'
         sys.exit()
 
     # Reading parameters from param file into namespace.
@@ -62,7 +62,7 @@ if __name__ == "__main__":
     # ---------------------------------------
 
 
-    def calc_lnN(Q, n):
+    def calc_lnL(Q, n):
         #time_b = timeit.default_timer()
         Cl_model = utils.get_C_ell_model(Q,n,lmax)
         #time_c = timeit.default_timer()
@@ -86,9 +86,11 @@ if __name__ == "__main__":
     # Guess the first values
     q_values[0] = q_guess
     n_values[0] = n_guess
+    lnL[0] = calc_lnL(q_guess,n_guess)
 
     # Precalc probabilities for MCMC
-    u = np.random.rand(int(num_mcmc_iterations))
+    #u = np.random.rand(size=int(num_mcmc_iterations))
+    u = np.random.uniform(size=int(num_mcmc_iterations))
     q_rand = np.random.normal(size=int(num_mcmc_iterations))
     n_rand = np.random.normal(size=int(num_mcmc_iterations))
 
@@ -99,26 +101,26 @@ if __name__ == "__main__":
         n_new = n_values[i-1] + n_step*n_rand[i]
 
         # Pick value at location
-        lnL_new = calc_lnN(q_new, n_new)
+        lnL_new = calc_lnL(q_new, n_new)
 
         # alpha = min(1, ...)
         diff = lnL_new - lnL[i-1]
         if diff >= 0:
-            alpha = 1.
+            alpha = 1
         else:
             alpha = np.exp(diff)
 
         # This is what makes this routine work! We test our "throw-away-probability (alpha)"
         # against a random variable. This will result in some "not desired" values,
         # which will result in the outher values of the plot
-        if u[i] < alpha:
+        if u[i] <= alpha:
             lnL[i] = lnL_new
             q_values[i] = q_new
             n_values[i] = n_new
         else:
-            lnL[i-1] = lnL[i]
-            q_values[i-1] = q_new
-            n_values[i-1] = n_new
+            lnL[i] = lnL[i-1]
+            q_values[i] = q_values[i-1]
+            n_values[i] = n_values[i-1]
  
         # 
         if debug_mode:
@@ -131,15 +133,15 @@ if __name__ == "__main__":
             # In-loop printing of lnL, so we have something to look at
             # even if the job isn't finished
             of = open(resultfile_dat,'a')
-            of.write("%f %f %f\n"%(Q,n,-0.5*lnL[i,j]))
+            of.write("%f %f %f\n"%(Q,n,lnL[i,j]))
             of.close()
             
-    lnL *= -0.5
     print 'Total runtime: %f seconds'%(timeit.default_timer() - runtime_start)
 
     # Saving full likelihood in numpy array format. This is faster and easier
     # to read in later, for visualization
     np.save(resultfile,np.vstack([q_values.T,n_values.T,lnL]))
+    #np.save(resultfile,np.vstack([q_values.T,n_values.T]))
 
     # Adding a dump to ASCII file as well, in case you prefer non-python visualization
     #if not debug_mode:

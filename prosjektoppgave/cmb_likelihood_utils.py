@@ -22,8 +22,6 @@ import sys
 import numpy as np
 from scipy.special import legendre
 import scipy.linalg as spl
-from scipy.special import factorial
-from scipy.special import gamma
 
 def get_noise_cov(rms):
     """
@@ -31,10 +29,7 @@ def get_noise_cov(rms):
     Compute the noise covariance matrix from the pixel standard deviations
     """
     # 1: Compute a matrix with element (i,i) = sigma_i^2
-    N_cov = np.diag(rms**2)
-    #print np.sum(N_cov)
-    #sys.exit(0)
-    return N_cov
+    return np.diag(rms**2)
 
 
 def get_foreground_cov(x,y,z):
@@ -68,7 +63,7 @@ def get_C_ell_model(Q,n,lmax):
 
     #d 3: Compute multipoles 3 through lmax recursively
     for l in range(3,lmax+1):
-        C_ell[l] = C_ell[l-1]*(2.*l + n-1)/(2.*l+5-n)
+        C_ell[l] = C_ell[l-1]*(2*l + n-1)/(2*l+5-n)
         #C_ell[l] = C_ell[l-1]*(l + (n-1)/2.)/(2.*l+5-n)
 
     #print np.sum(C_ell)
@@ -140,23 +135,22 @@ def get_signal_cov(C_ell, beam, pixwin, p_ell_ij):
     #    S_cov[:,:] += (2.*l + 1.)*(np.power(beam[l]*pixwin[l],2))*C_ell[l]*p_ell_ij[:,:,l]
 
     # The "daniel-way":
-    #ell = np.arange(lmax+1)
-    #sum_over_ell = np.sum((2.*ell + 1.)*(np.power(beam*pixwin,2))*C_ell)
-    #S_cov = sum_over_ell*np.sum(p_ell_ij,axis=2)
-    #S_cov = np.einsum('ijl,...l->ij',p_ell_ij,ell_dep_array)
+    ell = np.arange(lmax+1)
+    ell_dep_array = (2.*ell + 1)*(beam*pixwin)**2*C_ell
+    S_cov = np.einsum('ijl,...l->ij',p_ell_ij,ell_dep_array)
 
     # The "hans-kristian-way":
-    vecell = 2.*np.arange(lmax+1, dtype=float) + 1.
-    vecbeam = np.square(np.multiply(beam, pixwin))
-    vec = np.multiply(vecell, vecbeam)
-    vec = np.multiply(vec, C_ell)
+    #vecell = 2.*np.arange(lmax+1, dtype=float) + 1.
+    #vecbeam = np.square(np.multiply(beam, pixwin))
+    #vec = np.multiply(vecell, vecbeam)
+    #vec = np.multiply(vec, C_ell)
+    #S_cov = np.dot(p_ell_ij, vec)
 
     # 1: Compute all the elements of the sum over ell, as arrays
 
     # 2: Assemble a single array with all the ell terms which are independent of (i,j)
 
     # 3: Compute the covariance matrix by an appropriate inner product
-    S_cov = np.dot(p_ell_ij, vec)
 
     return S_cov/(4.*np.pi)
 
@@ -177,18 +171,17 @@ def get_lnL(data, cov):
 
     # 2: Compute log(det(C)) from L
     #logdet = np.linalg.slogdet(L)[1]*2
-    logdet = 2.*np.sum(np.log(np.diag(L)))
+    logdet = 2*np.sum(np.log(np.diag(L)))
 
     # 3: Solve for L^-1 d using scipy.linalg.solve_triangular
     #x = spl.solve_triangular(L, np.identity(len(L)))
     x = spl.solve_triangular(L, data, lower=True)
 
     # 4: Assemble -2*lnL using the components just computed
-    C_inv = np.dot(np.transpose(x),x)
-    c_sq = np.dot(np.transpose(data),np.dot(C_inv,data))
+    chi_sq = np.dot(x.T,x)
         
     #result = (c_sq + logdet)
-    result = np.dot(x.T,x) + logdet
+    result = -0.5*(chi_sq + logdet)
     #print "chi_sq = %g" % (c_sq)
     #print "lnL = %g" % (result)
 

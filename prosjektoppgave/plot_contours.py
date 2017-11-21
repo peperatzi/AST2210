@@ -15,23 +15,22 @@ if __name__ == "__main__":
         print 'Or: python plot_contours.py resultfile.dat numpoints_Q numpoints_n'
         sys.exit()
 
-    inputfile = sys.argv[1]
-    if inputfile[inputfile.rfind('.'):]=='.npy':
-        a = np.load(inputfile)
+    inputfile1 = sys.argv[1]
+    if inputfile1[inputfile1.rfind('.'):]=='.npy':
+        a = np.load(inputfile1)
         Q_values = a[0,:]
         n_values = a[1,:]
         lnL = a[2:,:]
-        qgrid, ngrid = np.meshgrid(Q_values,n_values, indexing='ij')
+        qgrid1, ngrid1 = np.meshgrid(Q_values,n_values, indexing='ij')
 
-    else: # ascii file
-        n_Q = int(sys.argv[2])
-        n_n = int(sys.argv[3])
-        a = np.loadtxt(inputfile)
-        qgrid = np.reshape(a[:,0],(n_Q, n_n))
-        ngrid = np.reshape(a[:,1],(n_Q, n_n))
-        lnL = np.reshape(a[:,2],(n_Q, n_n))
-        Q_values = qgrid[:,0]
-        n_values = ngrid[0,:]
+    inputfile2 = sys.argv[2]
+    if inputfile2[inputfile2.rfind('.'):]=='.npy':
+        a = np.load(inputfile2)
+        Q_values = a[0,:]
+        n_values = a[1,:]
+        lnL = a[2:,:]
+        qgrid2, ngrid2 = np.meshgrid(Q_values,n_values, indexing='ij')
+
 
     lnL -= np.amax(lnL) # arbitrarily "normalizing" to make the numbers more manageable
 
@@ -39,7 +38,25 @@ if __name__ == "__main__":
     # 99.7%) confidence regions correspond to where -2 lnL increases by
     # 2.3, 6.17 and 11.8 from its minimum value. 0.1 is close to the
     # peak. 
+    fig, ax = plt.subplots()
+
     my_levels = [0.1, 2.3, 6.17, 11.8]
-    cs = plt.contour(qgrid,ngrid, -2.*lnL, levels=my_levels, colors='k')
-    plt.grid()
+    cs1 = ax.contour(qgrid1,ngrid1, -2.*lnL, levels=my_levels, colors='r')
+    ax.clabel(cs1, inline=1, fontsize=10)
+#    plt.hold("on")
+    cs2 = ax.contour(qgrid2,ngrid2, -2.*lnL, levels=my_levels, colors='g')
+    ax.clabel(cs2, inline=1, fontsize=10)
+    #plt.grid()
+
+    #plt.legend(['$50 \ GHz$', '$90 \ GHz$'])
+
+    lines = [ cs1.collections[0], cs2.collections[1]]
+    labels = ['50 GHz','90 Ghzs']
+    plt.legend(lines, labels)
+
+
     plt.show()
+
+
+
+

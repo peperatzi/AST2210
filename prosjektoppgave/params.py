@@ -21,6 +21,6 @@ cmbfile    = 'data/cobe_dmr_%dGHz_n%d.npy'%(band,nside)
 beamfile   = 'data/cobe_dmr_beam.npy'
 pixwinfile = 'data/pixwin_n%d.npy'%nside
 
-resultfile = 'cobe_dmr_%dghz_lnL.npy'%band
+resultfile = 'data/cobe_dmr_%dghz_lnL.npy'%band
 
 

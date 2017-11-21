@@ -4,112 +4,219 @@
 \usepackage{graphicx}
 \usepackage{float}
 \usepackage{amsmath}
+\usepackage{amsfonts}
 \usepackage{epsfig,floatflt}
-
-
+\usepackage{braket}
+%\usepackage{gensymb}
 
 \begin{document}
 
-\title{On determining the spectrum of primordial inhomogeneity from the COBE DMR Sky Maps:Results of two-year data analyses}
+\title{Determining the power spectrum of the COBE DMR sky maps: Analysis of four-year data}
 
 \author{Hans-Petter Harveg}
 
-\email{ola.d.nordmann@astro.uio.no}
+\email{hanspeph@student.matnat.uio.no}
 
 \altaffiltext{1}{Institute of Theoretical Astrophysics, University of
   Oslo, P.O.\ Box 1029 Blindern, N-0315 Oslo, Norway}
 
-
 %\date{Received - / Accepted -}
 
 \begin{abstract}
-  Data analysis has been applied to the two-year COBE-DMR 53 and 90 GHz sky maps. The Bayesian power spectrum estimation results are consistent with the Harrison-Zel'dovich $n = 1$ model. The maximum likelihood estimates of of the usual parameters defining the power spectrum of primordial perturbations are $n = 1.22$ and $Q = 17 \ \mu K$ including (excluding) 
+  We apply Marcov Chain Monte Carlo data analysis to the four-year COBE-DMR observations were we focus on two important cosmological parameters; $Q$, the \textit{amplitude} and $n$, the \textit{tilt} of the CMB spectrum.
 \end{abstract}
 \keywords{cosmic microwave background --- cosmology: observations --- methods: statistical}
 
 \section{Introduction}
 \label{sec:introduction}
-  The determination of the power spectrum of primordial inhomogeneities and their consiscency with the pridictions of inflation are critical issues in contemporary cosmology. Standard inflationary scenarios imply a power-law spectrum $P(k) \propto k^n$ with $n \approx 1$ on the scales probed in the COBE DMR sky maps. Previous attepts to detirmine the primordial power spectrum from the DMR found both relatively steep spectra and sensitivity to the inclusion or exclusion of the quadrupole in their results. Most methods have employed approximate statistical techuniques and have relied on Monte Carlo techniques to access and/or calibrate the final results.
 
-  In this \textit{Letter} the COBE DRM two-year 53 and 90 GHz data are analizied to determine the primordial power spectrum using the methods described in Gòrski (1994). Spesifically, the sky maps are Fourier decomposed in the basis of orthonormal functions on the Galaxy-cut sky to yield a set of harmonic mode coefficients, which are linear in pixel temperatures. These are then used in a maximum likelihood analyses to infer the parameters of the theoretical ansisotropy models. The merits of the present method are (1) harmonic mode coupling is explicity accounted for by contruction of the orthonormal functions of the Galaxy-cut sky, (2) since the harmonic modes have a Gaussian probability distribution an \textit{exact} likelihood function for the model parameters can be employed, (3) the monopole and dipole components, which are physically irrelevant for the power spectrum estimation, are algegraicly excluded, and (4) the technique permits a simultaneous analysis of different frequency maps taking full advantage of both the auto- and cross-correlation information in the data.
+\subsection{The Cosmic Microwave Background (CMB)}
+\label{subsec:cmb_description}
+  The CMB is a collection of the oldest phothons in the universe. These photons were released about $380 \ 000$ years after the Big Bang, when the temperature fell below $3000K$. Before that time, all space was filled with a plasma of free electrons and free photons and the photons were trapped whithin this plasma, because they frequently got scattered around in the plasma. Once the temperature fell below $3000K$, suddenly all free electrons effectively "disappeared", merging with protons into the hydrogen. The trapped photons were then released and free to move througout the universe.
 
-  In this analysis we Fourier decompose the two-year DMR sky maps over the $\ell = 46$, where the DMR beam response has fallen to $\approx 0.2$, and the multipole amplitude is entirely noise dominated. No attempts is made to model and subtract formally the diffuse high-latitude Galactic emmisiom, which is predominantly quadrupolar in nature. Therefor, in what follows, the power spectrum parameters are derived for two cases: one in which data spanning the multipole range$\ell \in [2,46]$ are used, and the other in which the quadropole ($\ell = 2$) mode is excluded.
+  Because of the expansion of the universe, the wavelength of these released photons are streched. This caused the temperature of the photons to decrease by about $1100K$, from about $3000K$ to about$2.7K$, which is the wavelength that corresponds to microwaves and is today observable at all radio frequencies. Essensially, the CMB map shows the matter density shortly after the Big Bang. In other words; the hotter the photons, the higher the denisty.
 
-  Hereafter, bold upper case letters denote matrices; vectors are denoted by an arrow above the letter; and \textit{p} is a pixel label.
+\subsection{Spherical harmonic decomposition}
+
+  In our analysis, we therefore need to find the variation in CMB temperature as a function of the position on the sky. To do so, we will use a variation of Fourier transforms, namely spherical harmonic decomposition which is just a spherical equivalent to Fourier transforms. Following the (Eriksen and Ruud, 2017)\ref{bib:assignment}, we have
+
+\begin{equation}
+\Delta T(\hat{n}) = \Sigma_{\ell=0}^{\ell_{max}}\Sigma_{m=-\ell}^\ell a_{\ell m}Y_{\ell m}(\hat{n}),\\[5pt]
+\end{equation}
+where $a_{\ell m}$ is the amplitudes of the waves, $\ell$ and $m$ are two charecteristic numbers, describing each wave mode. $\ell$ describe the effective wavelength and $m$ describe the phase.
+
+  By applying sperical harmonic depomposition, we will use the \textit{amplitude} of the signal as a function of wavelength to produce what is called the \textit{angular power spectrum}. By comparing our predictions to the measured data, we can find a best-fit of the real picture of the universe.
+
+  From now on, we will use bold upper case letters to denote matrices, bold lower case letters to denote vectors, and use \textit{p} as a \textit{pixel label}.
 
 \section{Method}
 \label{sec:method}
 
+\subsection{Data model}
+\label{subsec:data_model}
+ 
+We will now describe the methods used in this Letter. Following (Eriksen and Ruud, 2017), we model our data as a sum of a CMB component and an instrumental noise component,
+\begin{equation}
+d(\hat{n}) = s(\hat{n}) + n(\hat{n}) + f(\hat{n}),\\[10pt]
+\label{eq:equation_1}
+\end{equation}
+where \textit{d} is the observed signal, \textit{s} is the true CMB signal, \textit{n} is the noise, \textit{f} is possible non-cosmoligical foreground signals, and $\hat{n}$ is the direction. We assume that $s$, $n$ and $f$ are non-correlating,  so all cross products will have zero mean. 
 
-Describe method. Define data model and likelihood. Outline how the
-likelihood was computed (grid or MCMC).
+  The covariance matrix of \textit{d} is therefore given by
 
-Define the power law model in terms of $Q$ and $n$. 
+\begin{equation}
+\textbf{C} \equiv \braket{\textbf{d}\textbf{d}^T} \equiv \textbf{S} + \textbf{N} + \textbf{F},\\[10pt]
+\end{equation}
+where \textbf{S} is the covariance matrix of the CMB signal, \textbf{N} is the covariance matrix of the noise, and \textbf{F} is the covariance matrix of the foregrounds. In our case, each of these matrices will be an $N_{pix}\times N_{pix}$-matrix.
+
+  We assume that the noise is Gaussian-distributed and uncorrelated between pixels. The standard deviation is given by $\sigma_p$. The noise covariance matrix is diagonal with the usual variance located along the diagonal
+
+\begin{equation}
+N_{ij} = \braket{n_in_j} = \sigma_i^2\delta_{ij},\\[10pt]
+\end{equation}
+where $i$ and $j$ are two pixel indices.
+
+  Next, we assume that \footnote{Eriksen and Ruud, 2017} the CMB field is Gaussian and isotropic, but this time correlated between pixels. In this case the signal covariance matrix is therefore
+
+\begin{equation}
+S_{ij} = \frac{1}{4\pi}\Sigma_{\ell=0}(2\ell + 1)(\textit{b}_\ell\textit{p}_\ell)^2 C_\ell P_\ell(\cos{\theta_{ij}}),\\[10pt]
+\end{equation}
+where $b_\ell$ and $p_{\ell}$ is the \textit{instrumental beam} and \textit{pixel window} respectively, both described in \ref{sec:introduction}. $P_\ell(\theta_{is})$ is the legender polynomials where $\theta_{is}$ is the angle between pixels two pixels $i$ and $j$.
+
+  Following (Bond and Efstathiou, 1987), to build the power spectrum $C_\ell$ we use
+\begin{equation}
+C_\ell = \frac{4\pi}{5}Q^2\frac{\Gamma{(\ell + \frac{n - 1}{2})}\Gamma{(\frac{9-n}{2})}}{\Gamma{(\ell + \frac{5-n}{2})}\Gamma{(\frac{3+n}{2})}},\\[10pt]
+\end{equation}
+We remove the monopole and the diploe by setting $C_0 = C_1 = 0$. Factorials are computational heavy. We therefore rewrite the expression by taking advantage of its recursive nature 
+
+  To remove the monopole and dipole, we add a final term
+\begin{equation}
+\textbf{F} = \lambda\textbf{f}\textbf{f}^T,\\[10pt]
+\end{equation}
+where $\lambda$ is large constant, \textbf{f} is the known structure on the sky one wants to be insensitive to.
+
+\begin{equation}
+\textbf{C} = \textbf{S} + \textbf{N} + \textbf{F},\\[10pt]
+\end{equation}
+where the induvidual matrices are described above.
+
+\subsection{Likelihood analysis}
+\label{subsec:likelihood_analysis}
+  To find the best-fit values of $Q$ and $n$ we use the so-called \textit{maximum-likelihood} framework (Eriksen and Ruud, 2017) defined by 
+\begin{equation}
+\mathcal{L}(Q,n) = p(\textbf{d}Q,n).\\[10pt]
+\end{equation}
+
+The joint distribution of $Q$ and $n$ is given by a multi-variate Gaussian distribution, with \textbf{d} as its variable. Using the covariance matrix described above, we thus have
+
+\begin{equation}
+-2\log{\mathcal{L}(Q,n)} = \textbf{d}^TC^{-1}\textbf{d} + \log{|C|} + constant.\\[10pt]
+\label{eq:log_likelihood}
+\end{equation}
+We will use (eq. \ref{el:log_likelihood}) evaluate different combinations of $Q$ and $n$. Because of numerical errors, we need to perform all our calculations in \textit{log-uniuts}, then exponentiate at the end.
+
+  Finaly we produce a two-dimensional contour plot based on the likelihood of the combinations of $Q$ and $n$. Markov Chain Monte Carlo is applyed to solve the likelyhood.
+
+  Finally we use the two-dimensional data to calculate induvidual distributions for $Q$ and $n$ by
+\begin{equation}
+\mathcal{L}(Q) = \int_{inf}^{inf} \mathcal{L}(Q, n) \ dn \ \ \text{and} \ \ \mathcal{L}(n) = \int_{inf}^{inf} \mathcal{L}(Q, n) \ dQ,\\[10pt]
+\end{equation}
+for $Q$ and $n$ respectively.
+
+% Define the power law model in terms of $Q$ and $n$. 
+
 
 \section{Data}
 \label{sec:data}
+  In our analysis we use the following data
+\begin{itemize}
+\item Two sets of data set from observations taken at 53GHz and 90GHz. Both files contains 1941 pixels. Each pixel has a linear size of $3.7^\circ \ (230')$. From a total of 3072, 1131 have been removed by a binary mask.
+\item Two corresponding files for the variance (rms) of each pixel.
+\item A null transparancy mask binary mask for "hide" undesired data
+\item Instrumental beam data
+\end{itemize}
 
-Summarize properties of data. Which data are used (experiment,
-frequencies etc.)? Pixel resolution ($N_{\textrm{side}}$),
-$\ell_{\textrm{max}}$ -- everything necessary to repeat the analysis
-for other researchers.
+All data used in this experiment can be found here.
 
-Show a sky map of the smoothed data. Use the Healpix routine
-``smoothing'' to do this; it works just like anafast. Smooth with a
-$7^{\circ}$ beam, and plot with ``map2gif''. Show the RMS pattern as
-well. 
+% Summarize properties of data. Which data are used (experiment,
+% frequencies etc.)? Pixel resolution ($N_{\textrm{side}}$),
+% $\ell_{\textrm{max}}$ -- everything necessary to repeat the analysis
+% for other researchers.
+
+% Show a sky map of the smoothed data. Use the Healpix routine
+% ``smoothing'' to do this; it works just like anafast. Smooth with a
+% $7^{\circ}$ beam, and plot with ``map2gif''. Show the RMS pattern as
+% well. 
+
 
 \section{Results}
 \label{sec:results}
 
+% Show the 2D likelihood contours. Summarize constraints on $Q$ and
+% $n$. 
 
-Show the 2D likelihood contours. Summarize constraints on $Q$ and
-$n$. 
+%\begin{figure}[t]
+%\mbox{\epsfig{figure=../pixel_53Hz_dist.png,width=\linewidth,clip=}}
+%\caption{Pixel plot of the distribution of $n$ of $Q$ for the $53Ghz$ band.}
+%\label{fig:figure_53_label}
+%\end{figure}
 
+%\begin{figure}[t]
+%\mbox{\epsfig{figure=../pixel_90Ghz_dist.png,width=\linewidth,clip=}}
+%\caption{Pixel plot of the distribution of $n$ of $Q$ for the $90GHz$ band.}
+%\label{fig:figure_90_label}
+%\end{figure}
+
+%\begin{figure}[t]
+%\mbox{\epsfig{figure=../prob_n_dist.png,width=\linewidth,clip=}}
+%\caption{Plot of the induvidual probability density of $n$ for the both 50 and $90GHz$ band.}
+%\label{fig:figure_n_dist_label}
+%\end{figure}
+
+%\begin{figure}[t]
+%\mbox{\epsfig{figure=../prob_Q_dist.png,width=\linewidth,clip=}}
+%\caption{Plot of the induvidual probability density of $Q$ for the both 50 and $90GHz$ band.}
+%\label{fig:figure_Q_dist_label}
+%\end{figure}
+
+%\begin{deluxetable}{cccc}
+%    %\tablewidth{0pt}
+%    \tablecaption{\label{tab:jwst}}
+%    \tablecomments{JWST resolution }
+%    %\tablecolumns{4}
+%    \tablehead{ a & b & c & d  } 
+%        \startdata
+%        1 & 2 & 3 & 4\\
+%        4 & 5 & 6 & 7\\
+%        7 & 8 & 9 & 10\\
+%        \enddata
+%\end{deluxetable}
 
 \section{Conclusions}
 \label{sec:conclusions}
 
-Summarize results. Discuss their importance, referring to the
-discovery to the initial seeds for structure formation. Mention that
-these results are in good agreement with expectations from
-inflationary theory.
+% Summarize results. Discuss their importance, referring to the
+% discovery to the initial seeds for structure formation. Mention that
+% these results are in good agreement with expectations from
+% inflationary theory.
 
-
-
-%\begin{figure}[t]
-%
-%\mbox{\epsfig{figure=filename.eps,width=\linewidth,clip=}}
-%
-%\caption{Description of figure -- explain all elements, but do not
-%draw conclusions here.}
-%\label{fig:figure_label}
-%\end{figure}
-
-
-
-\begin{deluxetable}{lccc}
-%\tablewidth{0pt}
-\tablecaption{\label{tab:results}}
-\tablecomments{Summary of main results.}
-\tablecolumns{4}
-\tablehead{Column 1  & Column 2 & Column 3 & Column 4}
-\startdata
-Item 1 & Item 2 & Item 3 & Item 4
-\enddata
-\end{deluxetable}
+The Marcov Chain Monte Carlo algorithm 
 
 
 
 \begin{acknowledgements}
-  Who do you want to thank for helping out with this project?
+  We want to thank Hans-Kristian Eriksen and Ainar Drews for guiding us through this study. Thanks to Daniel Heinesen for giving us pointers on how to solve the max funtion in the Metropolis Hastings algorithm.
 \end{acknowledgements}
 
 \begin{thebibliography}{}
 
+\bibitem[Project assignment AST2210 - Analysis of four-year COBE-DMR DATA]{eriksen:2017} H.K.Eriksen, T.M Ruud
+\label{bib:assignment}
+
 \bibitem[G{\'o}rski et al.(1994)]{gorski:1994} G{\'o}rski, K. M.,
   Hinshaw, G., Banday, A. J., Bennett, C. L., Wright, E. L., Kogut,
   A., Smoot, G. F., and Lubin, P.\ 1994, ApJL, 430, 89
+\label{bib:gorsky}
 
 \end{thebibliography}
 
